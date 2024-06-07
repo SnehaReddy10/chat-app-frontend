@@ -7,6 +7,7 @@ function ChatWindow() {
   const [latestMessages, setLatestMessages] = useState<any>([]);
   const [replies, setReplies] = useState<any>([]);
   const [targetId, setTargetId] = useState('');
+  const [currentMessage, setCurrentMessage] = useState('');
 
   useEffect(() => {
     if (socket) {
@@ -48,23 +49,33 @@ function ChatWindow() {
             </div>
           ))}
       </div>
-      <input
-        type="text"
-        className="absolute bottom-3 h-9 end-0 mx-4 w-1/2 rounded-sm"
-        onBlur={(e) => {
-          setReplies((x: any) => [
-            ...x,
-            { id: uuidv4(), message: e.target.value },
-          ]);
-          console.log(replies);
-          socket.send(
-            JSON.stringify({
-              message: e.target.value,
-              targetId,
-            })
-          );
-        }}
-      />
+      <div className="flex absolute bottom-3 h-12 end-8 items-center">
+        <input
+          type="text"
+          className="px-6 py-1 mx-4 rounded-full"
+          onBlur={(e) => {
+            setCurrentMessage(e.target.value);
+          }}
+        />
+        <button
+          onClick={() => {
+            setReplies((x: any) => [
+              ...x,
+              { id: uuidv4(), message: currentMessage },
+            ]);
+            console.log(replies);
+            socket.send(
+              JSON.stringify({
+                message: currentMessage,
+                targetId,
+              })
+            );
+          }}
+          className="bg-slate-800 hover:bg-slate-700 px-6 py-1 text-white uppercase text-[0.55rem] font-bold rounded-sm"
+        >
+          Send
+        </button>
+      </div>
     </div>
   );
 }
