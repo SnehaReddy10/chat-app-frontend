@@ -3,25 +3,18 @@ import useSocket from '../hooks/useSocket';
 import { v4 as uuidv4 } from 'uuid';
 
 function ChatWindow() {
-  console.log('ChatWindow');
   const socket = useSocket();
   const [latestMessages, setLatestMessages] = useState<any>([]);
   const [replies, setReplies] = useState<any>([]);
   const [targetId, setTargetId] = useState('');
 
-  console.log('targetId', targetId);
-
   useEffect(() => {
     if (socket) {
-      console.log('socket', socket);
       socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        console.log(message, 'message');
         if (message.type == 'id') {
           setTargetId(message.id);
-          console.log('targetid', targetId);
         } else if (message.type == 'message') {
-          console.log(latestMessages, 'latestMessages');
           setLatestMessages((x: any) => [...x, message.message]);
         }
       };
